@@ -1341,13 +1341,10 @@ html[data-m3-skin],
 body[data-m3-skin] {
   background-color: var(--m3surf) !important;
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='90' viewBox='0 0 260 90'%3E%3Cpath d='M0 45 Q32.5 15 65 45 T130 45 T195 45 T260 45' fill='none' stroke='%23ffffff' stroke-opacity='.18' stroke-width='2'/%3E%3C/svg%3E"),
-    radial-gradient(62rem 42rem at 8% -12%, color-mix(in srgb, var(--m3pc) 78%, transparent) 0%, transparent 64%),
-    radial-gradient(52rem 38rem at 108% 6%, color-mix(in srgb, var(--m3pc) 48%, transparent) 0%, transparent 62%),
-    linear-gradient(180deg, var(--m3surf) 0%, color-mix(in srgb, var(--m3pc) 30%, var(--m3surf)) 100%) !important;
-  background-size: 260px 90px, auto, auto, auto;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='90' viewBox='0 0 260 90'%3E%3Cpath d='M0 45 Q32.5 15 65 45 T130 45 T195 45 T260 45' fill='none' stroke='%23ffffff' stroke-opacity='.18' stroke-width='2'/%3E%3C/svg%3E") !important;
+  background-size: 260px 90px !important;
   background-attachment: fixed;
-  background-repeat: repeat, no-repeat, no-repeat, no-repeat;
+  background-repeat: repeat !important;
 }
 
 body[data-m3-skin]:has([data-chat-running]),

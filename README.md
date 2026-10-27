@@ -75,7 +75,7 @@ Material You is the expressive branch of Material Design 3. The parts that matte
 | Principle | What it means here | How this skin expresses it |
 | --- | --- | --- |
 | Dynamic color | One seed color generates a tonal palette; every role is derived, never hand-picked per component. | Six seeds, each producing light and dark role maps consumed through `--m3-*` and `--dsw-alias-*` tokens. |
-| One continuous field | The reference images are a single colored sheet with cards resting on it, not a patchwork of sidebars and headers. | The document itself carries the field. Every shell column is transparent. Cards are the only "paper" on top. |
+| One continuous field | The reference images are a single colored sheet with cards resting on it, not a patchwork of sidebars and headers. | The document itself carries one flat tone — no gradients, no tinted blobs. Every shell column is transparent. Cards are the only "paper" on top. |
 | Tonal cards | Elevation is communicated by surface tone, not heavy borders or drop shadows. | Cards, tool rows and process rows share one near-white / near-black paper stock with a subtle primary tint. |
 | Organic underlays | The reference language is soft and wavy, not a grid of rectangles. | A faint wavy contour runs through the field; the composer carries the wave progress line. |
 | Expressive shape | Large corner radii, pills for navigation and actions, 28–40px sheets. | Sidebar rows and buttons are full pills; chat rows use 28–32px corners; the composer is a 36–40px capsule. |
