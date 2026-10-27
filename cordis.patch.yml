@@ -1,0 +1,4 @@
+# Material You skin: registers the browser half that paints the M3 skin.
+- insert:
+    - id: ui-skin-material-you
+      name: '@local/material-you-skin'

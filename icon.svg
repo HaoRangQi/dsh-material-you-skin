@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Material You">
+  <defs>
+    <linearGradient id="m3-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFF8F6"/>
+      <stop offset="1" stop-color="#F5E1A7"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#m3-bg)"/>
+  <g transform="translate(32 32)">
+    <path d="M0 -25C11 -25 16 -12 0 0C-16 -12 -11 -25 0 -25Z" fill="#FFB59D"/>
+    <path d="M0 -25C11 -25 16 -12 0 0C-16 -12 -11 -25 0 -25Z" fill="#FFDBCF" transform="rotate(90)"/>
+    <path d="M0 -25C11 -25 16 -12 0 0C-16 -12 -11 -25 0 -25Z" fill="#8B4A3A" transform="rotate(180)"/>
+    <path d="M0 -25C11 -25 16 -12 0 0C-16 -12 -11 -25 0 -25Z" fill="#D8C58D" transform="rotate(270)"/>
+    <circle r="5.5" fill="#FFF8F6"/>
+  </g>
+</svg>
