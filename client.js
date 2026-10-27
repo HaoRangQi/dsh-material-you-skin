@@ -1476,7 +1476,7 @@ body[data-m3-skin] .kiGsTW_header::after {
   -webkit-mask-size: 120px 7px;
   mask-size: 120px 7px;
   background-size: 120px 7px;
-  opacity: calc(var(--m3-busy) * .85);
+  opacity: .85;
   animation: m3-wave-mask-flow 1.15s linear infinite;
   pointer-events: none;
 }

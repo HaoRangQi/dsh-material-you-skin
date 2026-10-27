@@ -13,7 +13,7 @@ Built and tested against DeepSeek Harness `0.2.1-rc.3` (web surface).
 - **Dynamic color from six seeds** — Peach, Lavender, Sage, Ocean, Rose, Sand. Every role is derived from the seed, never hand-picked per component.
 - **One sheet, no seams** — the sidebar, header, chat and composer share a single painted surface. No dividers, no contrasting bands, no floating panels.
 - **Tonal paper cards** — elevation is expressed by surface tone and a soft lift, not by borders.
-- **Wave progress line** — while the model is working, a wavy ribbon grows from 0 to 100% along a faint straight track above the composer, then starts over. The wave keeps undulating as it fills. At rest the whole line disappears.
+- **Wave progress line** — while the model is working, a wavy ribbon grows from 0 to 100% along a faint straight track above the composer, then starts over. The wave keeps undulating as it fills. At rest the whole line disappears. A separate, always-on thin wave sits under the conversation header.
 - **Expressive send button** — a tonal disc holding one dark shape that keeps morphing: it tilts, stretches into an oval, rounds into a blob and settles back, on a 6-second loop. Never a static icon.
 - **A real palette** — the button beside the composer opens a palette panel: six seeds, plus hue and saturation sliders for a custom color. The whole interface re-tones live as you drag.
 - **Light and dark**, `prefers-reduced-motion` respected, all labels localized (English and Chinese).
@@ -131,7 +131,7 @@ Two details got their final form in this pass:
 
 ### Busy detection
 
-`--m3-busy` is `0` by default and becomes `1` under `:has([data-chat-running])`, `:has([data-streaming])` or `:has([data-state=running])`. The wave and the header line read that variable, so both are fully invisible at rest and animate only while the model works. No JavaScript timer is involved.
+`--m3-busy` is `0` by default and becomes `1` under `:has([data-chat-running])`, `:has([data-streaming])` or `:has([data-state=running])`. Only the composer wave reads that variable, so it is invisible at rest and runs only while the model works. The header wave is always visible. No JavaScript timer is involved.
 
 ---
 
