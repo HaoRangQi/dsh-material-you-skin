@@ -131,7 +131,7 @@ Two details got their final form in this pass:
 
 ### Busy detection
 
-`--m3-busy` is `0` by default and becomes `1` under `:has([data-chat-running])`, `:has([data-streaming])` or `:has([data-state=running])`. Only the composer wave reads that variable, so it is invisible at rest and runs only while the model works. The header wave is always visible. No JavaScript timer is involved.
+`--m3-busy` is `0` by default and becomes `1` under `:has([data-chat-running])` or `:has([data-streaming])`. Those two attributes only exist while a turn is actively running; tool cards are deliberately excluded, because a card left in a `running` state (a background job, a task that died) would hold the signal on forever. Only the composer wave reads that variable, so it is invisible at rest and runs only while the model works. The header wave is always visible. No JavaScript timer is involved.
 
 ---
 

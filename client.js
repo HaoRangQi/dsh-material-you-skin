@@ -1348,8 +1348,7 @@ body[data-m3-skin] {
 }
 
 body[data-m3-skin]:has([data-chat-running]),
-body[data-m3-skin]:has([data-streaming]),
-body[data-m3-skin]:has([data-state=running]) {
+body[data-m3-skin]:has([data-streaming]) {
   --m3-busy: 1;
 }
 
