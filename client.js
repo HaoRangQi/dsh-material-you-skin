@@ -19,6 +19,9 @@ window.__ModuleLoader__.load({
     const PKG = '@local/material-you-skin';
     const NS = 'material-you';
     const PREFS_KEY = 'material-you.prefs.v1';
+const PANEL_WIDTH = 286;
+const PANEL_GAP = 14;
+const PANEL_EDGE = 12;
 
     /* ------------------------------------------------------------------ */
     /* Copy                                                               */
@@ -655,12 +658,11 @@ body[data-m3-skin] hr {
 
 body[data-m3-skin] [data-composer-card] {
   position: relative;
-  border: 2px solid color-mix(in srgb, var(--m3p) 60%, transparent) !important;
-  border-radius: 40px !important;
+  margin-top: 15px;
+  border: 0 !important;
+  border-radius: 36px !important;
   background: var(--m3surf-lowest) !important;
-  box-shadow:
-    0 26px 60px -32px color-mix(in srgb, var(--m3p) 80%, transparent),
-    0 8px 24px -16px rgba(0,0,0,.3) !important;
+  box-shadow: 0 20px 50px -30px rgba(0,0,0,.45) !important;
   transition:
     border-color var(--m3-dur-short) var(--m3-ease-emphasized),
     box-shadow var(--m3-dur-medium) var(--m3-ease-emphasized),
@@ -765,6 +767,8 @@ body[data-m3-skin] ::-webkit-scrollbar-thumb:hover {
   filter: drop-shadow(0 2px 2px rgba(0,0,0,.12));
 }
 .m3-mark-wrap {
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -832,16 +836,17 @@ body[data-m3-skin] ::-webkit-scrollbar-thumb:hover {
 }
 
 .m3-hero-palette {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 12px;
   padding: 10px 18px 10px 20px;
-  border: 0;
+  margin-bottom: 22px;
+  border: 0 !important;
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--m3pc) 0%, var(--m3sc) 100%);
-  box-shadow:
-    0 18px 40px -24px color-mix(in srgb, var(--m3p) 75%, transparent),
-    inset 0 0 0 1px color-mix(in srgb, var(--m3p) 18%, transparent);
+  background: var(--m3surf-lowest) !important;
+  background-image: none !important;
+  box-shadow: 0 10px 28px -22px rgba(0,0,0,.35) !important;
 }
 .m3-hero-palette__label {
   font-size: 11px;
@@ -932,10 +937,11 @@ body[data-m3-skin][data-m3-motion=off] .m3-seed-button__ring {
   flex-direction: column;
   gap: 14px;
   padding: 20px 22px;
-  border: 0;
+  border: 0 !important;
   border-radius: 30px;
-  background: linear-gradient(135deg, var(--m3surf-lowest) 0%, color-mix(in srgb, var(--m3pc) 46%, var(--m3surf-lowest)) 100%);
-  box-shadow: 0 20px 50px -38px rgba(0,0,0,.5);
+  background: var(--m3surf-lowest) !important;
+  background-image: none !important;
+  box-shadow: 0 10px 30px -24px rgba(0,0,0,.35) !important;
 }
 .m3-card__head {
   display: flex;
@@ -1220,12 +1226,6 @@ body[data-m3-skin] [data-slot=sidebar] :is([aria-current=true], [aria-current=pa
 }
 
 /* composer: a white paper capsule with an organic underlay */
-body[data-m3-skin] [data-composer-card] {
-  background: var(--m3surf-lowest) !important;
-  border: 1.5px solid color-mix(in srgb, var(--m3p) 22%, transparent) !important;
-  border-radius: 36px !important;
-  box-shadow: 0 18px 50px -30px rgba(0,0,0,.42) !important;
-}
 body[data-m3-skin] [data-composer-card]::before {
   content: '';
   position: absolute;
@@ -1262,33 +1262,11 @@ body[data-m3-skin] [data-composer-card]:focus-within {
 }
 
 /* hero palette: a white pill on the sheet */
-.m3-hero-palette {
-  position: relative;
-  background: var(--m3surf-lowest) !important;
-  background-image: none !important;
-  border: 1px solid color-mix(in srgb, var(--m3p) 12%, transparent) !important;
-  box-shadow: 0 10px 28px -22px rgba(0,0,0,.35) !important;
-}
-.m3-hero-palette::before {
-  content: '';
-  position: absolute;
-  inset: -9px -12px -10px -8px;
-  z-index: -1;
-  background: var(--m3pc);
-  border-radius: 46% 54% 58% 42% / 48% 42% 58% 52%;
-  opacity: .65;
-  transform: rotate(2deg);
-  pointer-events: none;
-}
 .m3-hero-palette__label {
   color: var(--m3p) !important;
 }
 
 /* organic cloud behind the brand flower */
-.m3-mark-wrap {
-  position: relative;
-  isolation: isolate;
-}
 .m3-mark-wrap::before {
   content: '';
   position: absolute;
@@ -1301,30 +1279,6 @@ body[data-m3-skin] [data-composer-card]:focus-within {
 }
 
 /* settings cards: same paper, same hue */
-.m3-card {
-  background: var(--m3surf-lowest) !important;
-  background-image: none !important;
-  border: 1px solid color-mix(in srgb, var(--m3p) 12%, transparent) !important;
-  box-shadow: 0 10px 30px -24px rgba(0,0,0,.35) !important;
-}
-
-/* a soft scalloped edge for the sidebar, drawn as a wave rather than a border */
-body[data-m3-skin] [data-slot=sidebar] {
-  position: relative;
-}
-body[data-m3-skin] [data-slot=sidebar]::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: -1px;
-  bottom: 0;
-  width: 10px;
-  background-image: radial-gradient(circle at 0 8px, transparent 7px, color-mix(in srgb, var(--m3p) 12%, transparent) 8px, transparent 9px);
-  background-size: 10px 18px;
-  background-repeat: repeat-y;
-  opacity: .7;
-  pointer-events: none;
-}
 
 /* ------------------------------------------------------------------ */
 /* v4: one sheet, no seams, live wave progress, cloud send             */
@@ -1347,8 +1301,7 @@ body[data-m3-skin] {
   background-repeat: repeat !important;
 }
 
-body[data-m3-skin]:has([data-chat-running]),
-body[data-m3-skin]:has([data-streaming]) {
+body[data-m3-skin][data-m3-busy] {
   --m3-busy: 1;
 }
 
@@ -1401,20 +1354,15 @@ body[data-m3-skin] [data-dsh-claude-part~=conversation-header] {
   box-shadow: none !important;
 }
 
-/* The hero palette is a small white pill on the sheet, not a blob. */
-body[data-m3-skin] .m3-hero-palette {
-  border: 0 !important;
-  margin-bottom: 22px !important;
-}
-body[data-m3-skin] .m3-hero-palette::before {
-  content: none !important;
-}
-
 /* Cards are paper, not outlined boxes: no seams, only a soft lift. */
 ${ROW} {
   border: 0 !important;
   box-shadow: 0 12px 30px -24px rgba(0,0,0,.38) !important;
 }
+/* Not redundant: these two repeat what the rule above already says, because
+   the attribute makes them MORE SPECIFIC. Another skin sets its borders with
+   !important too, so only the more specific selector can strip them. Deleting
+   these brings the card outlines back. */
 ${ROW}[data-chat-flow-kind=assistant-step] {
   border-left: 0 !important;
 }
@@ -1431,22 +1379,9 @@ ${ROW}[data-chat-flow-kind=system-prompt] {
   box-shadow: none !important;
 }
 
-body[data-m3-skin] [data-composer-card] {
-  border: 0 !important;
-  box-shadow: 0 20px 50px -30px rgba(0,0,0,.45) !important;
-}
-.m3-hero-palette,
-.m3-card {
-  border: 0 !important;
-}
 body[data-m3-skin] pre,
 body[data-m3-skin] .md-code-block {
   border: 0 !important;
-}
-
-/* The sidebar scallop was a seam; remove it. */
-body[data-m3-skin] [data-slot=sidebar]::after {
-  content: none !important;
 }
 
 /* Header progress wave: unchanged from v3 shape, still only while working. */
@@ -1484,9 +1419,6 @@ body[data-m3-skin] .kiGsTW_header::after {
    Composer progress: a wavy ribbon that fills the straight track from 0 to
    100%, then starts over. Only alive while the model is working.
    --------------------------------------------------------------------------- */
-body[data-m3-skin] [data-composer-card] {
-  margin-top: 15px;
-}
 body[data-m3-skin] [data-composer-card]::before {
   content: '';
   position: absolute;
@@ -1509,8 +1441,7 @@ body[data-m3-skin] [data-composer-card]::after {
   position: absolute;
   top: -19px;
   left: 30px;
-  right: auto;
-  width: 0;
+  right: 30px;
   height: 12px;
   background-color: var(--m3p);
   background-image: linear-gradient(90deg,
@@ -1528,10 +1459,17 @@ body[data-m3-skin] [data-composer-card]::after {
   -webkit-mask-position: 0 0;
   mask-position: 0 0;
   opacity: 0;
+  clip-path: inset(0 100% 0 0);
   animation:
     m3-wave-fill 2.6s cubic-bezier(.4,0,.25,1) infinite,
     m3-wave-undulate 1.35s linear infinite;
   pointer-events: none;
+}
+
+/* The ribbon's animation always runs; the gate is here. Without this it was
+   visible at rest whenever the loop happened to be past its 4% mark. */
+body[data-m3-skin]:not([data-m3-busy]) [data-composer-card]::after {
+  visibility: hidden;
 }
 
 /* Send: the gif form — a tonal circle holding one dark expressive ellipse. */
@@ -1628,6 +1566,9 @@ body[data-m3-skin] .m3-picker {
   box-sizing: border-box;
   padding: 16px 18px 18px;
   border-radius: 28px;
+  max-height: 70vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   background: var(--m3surf-lowest);
   color: var(--m3onsurf);
   box-shadow:
@@ -1779,12 +1720,12 @@ body[data-m3-skin] .m3-seed-button.is-open {
   to { -webkit-mask-position: 120px 0; mask-position: 120px 0; }
 }
 @keyframes m3-wave-fill {
-  0%   { width: 0; opacity: 0; }
-  4%   { width: 0; opacity: 1; }
-  78%  { width: 100%; opacity: 1; }
-  92%  { width: 100%; opacity: 1; }
-  97%  { width: 100%; opacity: 0; }
-  100% { width: 0; opacity: 0; }
+  0%   { clip-path: inset(0 100% 0 0); opacity: 0; }
+  4%   { clip-path: inset(0 100% 0 0); opacity: 1; }
+  78%  { clip-path: inset(0 0 0 0); opacity: 1; }
+  92%  { clip-path: inset(0 0 0 0); opacity: 1; }
+  97%  { clip-path: inset(0 0 0 0); opacity: 0; }
+  100% { clip-path: inset(0 100% 0 0); opacity: 0; }
 }
 @keyframes m3-wave-undulate {
   from { -webkit-mask-position: 0 0; mask-position: 0 0; }
@@ -2051,6 +1992,26 @@ body[data-m3-skin] .m3-seed-button.is-open {
       const buttonRef = React.useRef(null);
       const panelRef = React.useRef(null);
 
+      /* The panel is fixed-positioned, so it has to be re-anchored whenever the
+         composer moves under it: the chat scrolls, a window resizes, the seat
+         shifts when the sidebar collapses. */
+      function placePanel(node) {
+        if (!node) return null;
+        const rect = node.getBoundingClientRect();
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        if (rect.bottom < 8 || rect.top > vh - 8) return null;
+        if (rect.right < 8 || rect.left > vw - 8) return null;
+        const maxLeft = Math.max(PANEL_EDGE, vw - PANEL_WIDTH - PANEL_EDGE);
+        const left = Math.min(Math.max(PANEL_EDGE, rect.right - PANEL_WIDTH), maxLeft);
+        const bottom = Math.max(PANEL_EDGE, Math.round(vh - rect.top + PANEL_GAP));
+        return {
+          left: Math.round(left),
+          bottom: bottom,
+          maxHeight: Math.max(180, Math.round(rect.top - PANEL_GAP - PANEL_EDGE)),
+        };
+      }
+
       React.useEffect(function () {
         if (!open) return undefined;
         function onPointer(event) {
@@ -2063,11 +2024,24 @@ body[data-m3-skin] .m3-seed-button.is-open {
         function onKey(event) {
           if (event.key === 'Escape') setOpen(false);
         }
+        function reposition() {
+          const next = placePanel(buttonRef.current);
+          if (!next) {
+            setOpen(false);
+            return;
+          }
+          setPos(next);
+        }
         document.addEventListener('pointerdown', onPointer, true);
         document.addEventListener('keydown', onKey);
+        window.addEventListener('scroll', reposition, true);
+        window.addEventListener('resize', reposition);
+        reposition();
         return function () {
           document.removeEventListener('pointerdown', onPointer, true);
           document.removeEventListener('keydown', onKey);
+          window.removeEventListener('scroll', reposition, true);
+          window.removeEventListener('resize', reposition);
         };
       }, [open]);
 
@@ -2076,14 +2050,8 @@ body[data-m3-skin] .m3-seed-button.is-open {
           setOpen(false);
           return;
         }
-        const node = buttonRef.current;
-        if (node) {
-          const rect = node.getBoundingClientRect();
-          setPos({
-            right: Math.max(14, Math.round(window.innerWidth - rect.right)),
-            bottom: Math.max(14, Math.round(window.innerHeight - rect.top + 14)),
-          });
-        }
+        const next = placePanel(buttonRef.current);
+        if (next) setPos(next);
         setOpen(true);
       }
 
@@ -2114,7 +2082,11 @@ body[data-m3-skin] .m3-seed-button.is-open {
           prefs: current,
           innerRef: panelRef,
           style: pos
-            ? { right: pos.right + 'px', bottom: pos.bottom + 'px' }
+            ? {
+                left: pos.left + 'px',
+                bottom: pos.bottom + 'px',
+                maxHeight: pos.maxHeight ? pos.maxHeight + 'px' : undefined,
+              }
             : { right: '24px', bottom: '96px' },
           onPick: function (id) {
             setPrefs({ seed: id });
@@ -2162,6 +2134,40 @@ body[data-m3-skin] .m3-seed-button.is-open {
         root.removeAttribute('data-m3-skin');
         root.removeAttribute('data-m3-version');
       }
+    }
+
+    /* Busy state used to be a pair of :has() selectors on <body>. Every DOM
+       mutation during a streaming turn forced the whole document to re-test
+       them. This watches only the two attributes that actually change and
+       republishes the answer as one attribute on <body>. */
+    function installBusyWatcher() {
+      let frame = 0;
+      function measure() {
+        frame = 0;
+        const body = document.body;
+        if (!body) return;
+        const scope = document.querySelector('[data-conversation-region]') || body;
+        const busy = scope.querySelector('[data-chat-running], [data-streaming]');
+        if (busy) body.setAttribute('data-m3-busy', '');
+        else body.removeAttribute('data-m3-busy');
+      }
+      function schedule() {
+        if (frame) return;
+        frame = window.requestAnimationFrame(measure);
+      }
+      const observer = new MutationObserver(schedule);
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['data-chat-running', 'data-streaming'],
+      });
+      measure();
+      return function () {
+        observer.disconnect();
+        if (frame) window.cancelAnimationFrame(frame);
+        if (document.body) document.body.removeAttribute('data-m3-busy');
+      };
     }
 
     function installRipple() {
@@ -2251,6 +2257,10 @@ body[data-m3-skin] .m3-seed-button.is-open {
         ctx.effect(function () {
           return installRipple();
         }, 'material-you: pointer ripple');
+
+        ctx.effect(function () {
+          return installBusyWatcher();
+        }, 'material-you: busy watcher');
 
         ctx.slots.inject('settings.section', function () {
           return ctx.slots.register({

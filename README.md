@@ -122,16 +122,22 @@ So v4 stops fighting at the token level and neutralizes the painted surfaces dir
 
 Two details got their final form in this pass:
 
-- **Composer progress** is a wavy ribbon that fills the track: `width` animates from `0` to `100%` over 2.6 s, while a second animation slides the wave mask so the ribbon undulates as it grows. Two animations, two pseudo-elements: `::before` is the faint track, `::after` is the wave.
+- **Composer progress** is a wavy ribbon that fills the track: `clip-path` reveals it from `0` to `100%` over 2.6 s, while a second animation slides the wave mask so the ribbon undulates as it grows. Two animations, two pseudo-elements: `::before` is the faint track, `::after` is the wave. The reveal animates `clip-path` rather than `width`, so it repaints without laying out on every frame.
 - **The send button** is the reference circle: a tonal disc, one dark expressive shape inside, glyph on top. The inner shape is not a fixed ellipse — a `border-radius` / `rotate` / `scale` keyframe cycle morphs it continuously, the way the reference animation does.
 
 ### The palette
 
 `conversation.input.right` hosts a button that opens a fixed-position palette panel. Picking one of the six seeds sets a preset; dragging either slider switches the state to `custom` and stores a hue and saturation, so the token generator can build a full tonal map from any color, not just the presets. The panel closes on outside click or Escape.
 
+Because the panel is `position: fixed`, its coordinates are re-measured on scroll (captured, so nested scroll containers count) and on resize, so it stays welded to its button when the chat moves or the window changes. It is clamped to the left and right viewport edges, and its `max-height` is derived from the space actually available above the button, so it can never open off-screen or run past the top edge.
+
 ### Busy detection
 
-`--m3-busy` is `0` by default and becomes `1` under `:has([data-chat-running])` or `:has([data-streaming])`. Those two attributes only exist while a turn is actively running; tool cards are deliberately excluded, because a card left in a `running` state (a background job, a task that died) would hold the signal on forever. Only the composer wave reads that variable, so it is invisible at rest and runs only while the model works. The header wave is always visible. No JavaScript timer is involved.
+A small `MutationObserver` watches for exactly two attributes, `data-chat-running` and `data-streaming`, and republishes the answer as a single `data-m3-busy` attribute on `<body>`. Tool cards are deliberately excluded: a card left in a `running` state (a background job, a task that died mid-run) would otherwise hold the signal on forever, which is exactly what happened once.
+
+This used to be two `:has()` selectors on `<body>`. `:has()` is invalidated on every DOM mutation, so during a streaming turn the browser re-tested a descendant selector against the whole document on every token — a permanent tax for a progress bar. The observer collapses a whole frame's mutations into one `querySelector` call, and the CSS side is now a single attribute match.
+
+The ribbon's animation always runs; the gate is a separate rule that sets `visibility: hidden` whenever `data-m3-busy` is absent. Gating only the faint track (which is all `--m3-busy` used to do) left the animated ribbon itself ungated: it was visible at rest for the 96% of its cycle that is not the fade window. The header wave, by contrast, is always visible.
 
 ---
 
@@ -142,7 +148,8 @@ Two details got their final form in this pass:
 - The seed button cycles through all six seeds and wraps back to Peach; preferences persist to `localStorage`.
 - The generated stylesheet is ~50 KB, has balanced braces, and is scoped to `body[data-m3-skin]`.
 - All five slot registrations are present.
-- Headless Chrome renders pass in light and dark, idle and busy, plus the palette panel, at 1440×1000.
+- Headless Chrome renders pass in light and dark, idle and busy, plus the palette panel and the header tabs, at 1440×1000.
+- Refactors are checked with a pixel-diff harness: ten states are rendered with every animation frozen at a fixed offset, the before and after trees are compared channel by channel, and the change must be zero-diff before it lands. Three consolidation passes were verified this way; the one that was not zero-diff turned out to be a load-bearing rule (see the comment above the `data-chat-flow-kind` selectors).
 
 ### Known limits
 
