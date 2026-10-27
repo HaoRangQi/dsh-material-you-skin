@@ -1588,6 +1588,37 @@ body[data-m3-skin] [data-composer-card] :is(button[type=submit], button[class*="
 }
 
 /* ---------------------------------------------------------------------------
+   Header tabs: the active pill must wrap the label, not sit as a dot behind it.
+   --------------------------------------------------------------------------- */
+body[data-m3-skin] .kiGsTW_header [role=tab],
+body[data-m3-skin] [data-slot="conversation.header"] [role=tab] {
+  box-sizing: border-box;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  width: auto !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+  padding: 8px 18px !important;
+  margin: 2px 1px;
+  overflow: visible !important;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+body[data-m3-skin] .kiGsTW_header [role=tab][aria-selected=true],
+body[data-m3-skin] [data-slot="conversation.header"] [role=tab][aria-selected=true] {
+  width: auto !important;
+  height: auto !important;
+  padding: 8px 18px !important;
+  border-radius: 999px !important;
+}
+
+/* ---------------------------------------------------------------------------
    Palette panel: the full调色盘 — six seeds plus a custom hue and saturation.
    --------------------------------------------------------------------------- */
 body[data-m3-skin] .m3-picker {
