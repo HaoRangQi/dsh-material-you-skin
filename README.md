@@ -1,6 +1,6 @@
 # Material You Skin for DeepSeek Harness
 
-An expressive Material 3 / Material You skin for the DeepSeek Harness Web GUI: one continuous tonal field, paper cards, a squiggle progress line and a two-tone expressive send button.
+An expressive Material 3 / Material You skin for the DeepSeek Harness Web GUI: one continuous tonal field, paper cards, a wave progress line and a two-tone expressive send button.
 
 Built and tested against DeepSeek Harness `0.2.1-rc.3` (web surface).
 
@@ -13,7 +13,7 @@ Built and tested against DeepSeek Harness `0.2.1-rc.3` (web surface).
 - **Dynamic color from six seeds** — Peach, Lavender, Sage, Ocean, Rose, Sand. Every role is derived from the seed, never hand-picked per component.
 - **One sheet, no seams** — the sidebar, header, chat and composer share a single painted surface. No dividers, no contrasting bands, no floating panels.
 - **Tonal paper cards** — elevation is expressed by surface tone and a soft lift, not by borders.
-- **Squiggle progress line** — while the model is working, a short wavy stroke runs along a pale track above the composer, with a dot at the far end. At rest the whole line disappears.
+- **Wave progress line** — while the model is working, a wavy ribbon grows from 0 to 100% along a faint straight track above the composer, then starts over. The wave keeps undulating as it fills. At rest the whole line disappears.
 - **Expressive send button** — a tonal disc holding one dark rotated ellipse, with the glyph on top.
 - **A palette picker you can reach** — a seed palette on the new-session hero, a cycling seed button in the composer, and a full settings page with motion and ambient toggles.
 - **Light and dark**, `prefers-reduced-motion` respected, all labels localized (English and Chinese).
@@ -73,7 +73,7 @@ Material You is the expressive branch of Material Design 3. The parts that matte
 | Dynamic color | One seed color generates a tonal palette; every role is derived, never hand-picked per component. | Six seeds, each producing light and dark role maps consumed through `--m3-*` and `--dsw-alias-*` tokens. |
 | One continuous field | The reference images are a single colored sheet with cards resting on it, not a patchwork of sidebars and headers. | The document itself carries the field. Every shell column is transparent. Cards are the only "paper" on top. |
 | Tonal cards | Elevation is communicated by surface tone, not heavy borders or drop shadows. | Cards, tool rows and process rows share one near-white / near-black paper stock with a subtle primary tint. |
-| Organic underlays | The reference language is soft and wavy, not a grid of rectangles. | A faint wavy contour runs through the field; the composer carries the squiggle progress line. |
+| Organic underlays | The reference language is soft and wavy, not a grid of rectangles. | A faint wavy contour runs through the field; the composer carries the wave progress line. |
 | Expressive shape | Large corner radii, pills for navigation and actions, 28–40px sheets. | Sidebar rows and buttons are full pills; chat rows use 28–32px corners; the composer is a 36–40px capsule. |
 | State layers | Hover / focus / press are tonal overlays at fixed opacities. | `color-mix()` hover and active layers, a primary-container active-nav pill, a 5–6px focus halo, and a pointer ripple. |
 | Typography | Friendly, rounded, high-contrast scale. | Rounded system stack (`SF Pro Rounded`, `Google Sans`, `Nunito`), 25–30px titles, tighter display tracking. |
@@ -118,12 +118,12 @@ So v4 stops fighting at the token level and neutralizes the painted surfaces dir
 
 Two details got their final form in this pass:
 
-- **Composer progress** is the reference squiggle: a pale 3px track, a dot at the far end, and a 96×16 wavy stroke animated along it with `mask-position`.
+- **Composer progress** is a wavy ribbon that fills the track: `width` animates from `0` to `100%` over 2.6 s, while a second animation slides the wave mask so the ribbon undulates as it grows. Two animations, two pseudo-elements: `::before` is the faint track, `::after` is the wave.
 - **The send button** is the reference circle: a tonal disc, one dark rotated ellipse inside, glyph on top, with the ellipse rotating and softening on hover and press.
 
 ### Busy detection
 
-`--m3-busy` is `0` by default and becomes `1` under `:has([data-chat-running])`, `:has([data-streaming])` or `:has([data-state=running])`. The squiggle and the header wave read that variable, so both are fully invisible at rest and animate only while the model works. No JavaScript timer is involved.
+`--m3-busy` is `0` by default and becomes `1` under `:has([data-chat-running])`, `:has([data-streaming])` or `:has([data-state=running])`. The wave and the header line read that variable, so both are fully invisible at rest and animate only while the model works. No JavaScript timer is involved.
 
 ---
 

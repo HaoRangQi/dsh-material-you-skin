@@ -1442,8 +1442,8 @@ body[data-m3-skin] .kiGsTW_header::after {
 }
 
 /* ---------------------------------------------------------------------------
-   Composer progress: the gif form — a pale track with a dot at the far end,
-   and a short thick squiggle that runs along it while the model works.
+   Composer progress: a wavy ribbon that fills the straight track from 0 to
+   100%, then starts over. Only alive while the model is working.
    --------------------------------------------------------------------------- */
 body[data-m3-skin] [data-composer-card] {
   margin-top: 15px;
@@ -1452,19 +1452,14 @@ body[data-m3-skin] [data-composer-card]::before {
   content: '';
   position: absolute;
   inset: auto;
-  top: -19px;
+  top: -14px;
   left: 30px;
   right: 30px;
-  height: 10px;
+  height: 2px;
   z-index: auto;
-  border-radius: 0;
-  background-color: transparent;
-  background-image:
-    radial-gradient(circle at calc(100% - 5px) 50%, var(--m3p) 0 4.4px, transparent 4.6px),
-    linear-gradient(90deg, color-mix(in srgb, var(--m3p) 12%, transparent), color-mix(in srgb, var(--m3p) 12%, transparent));
-  background-size: auto, 100% 3px;
-  background-position: 0 0, 0 50%;
-  background-repeat: no-repeat, no-repeat;
+  border-radius: 99px;
+  background-color: color-mix(in srgb, var(--m3p) 13%, transparent);
+  background-image: none;
   opacity: var(--m3-busy);
   transform: none;
   pointer-events: none;
@@ -1473,23 +1468,30 @@ body[data-m3-skin] [data-composer-card]::before {
 body[data-m3-skin] [data-composer-card]::after {
   content: '';
   position: absolute;
-  top: -22px;
+  top: -19px;
   left: 30px;
-  right: 30px;
-  width: auto;
-  height: 16px;
+  right: auto;
+  width: 0;
+  height: 12px;
   background-color: var(--m3p);
-  background-image: linear-gradient(90deg, var(--m3p), var(--m3s), var(--m3p)) !important;
+  background-image: linear-gradient(90deg,
+    var(--m3p) 0,
+    color-mix(in srgb, var(--m3p) 72%, var(--m3s)) calc(100% - 30px),
+    transparent 100%) !important;
   background-repeat: no-repeat !important;
-  background-size: 96px 16px !important;
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='16' viewBox='0 0 96 16'%3E%3Cpath d='M6 9 Q12 2 18 9 T30 9 T42 9 T54 9 T66 9 T78 9 T90 9' fill='none' stroke='%23fff' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E");
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='16' viewBox='0 0 96 16'%3E%3Cpath d='M6 9 Q12 2 18 9 T30 9 T42 9 T54 9 T66 9 T78 9 T90 9' fill='none' stroke='%23fff' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E");
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: 96px 16px;
-  mask-size: 96px 16px;
-  opacity: var(--m3-busy);
-  animation: m3-squiggle-run 1.7s cubic-bezier(.45,.05,.55,.95) infinite;
+  background-size: 100% 100% !important;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='12' viewBox='0 0 80 12'%3E%3Cpath d='M0 6 Q10 1.8 20 6 T40 6 T60 6 T80 6' fill='none' stroke='%23fff' stroke-width='4.2' stroke-linecap='round'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='12' viewBox='0 0 80 12'%3E%3Cpath d='M0 6 Q10 1.8 20 6 T40 6 T60 6 T80 6' fill='none' stroke='%23fff' stroke-width='4.2' stroke-linecap='round'/%3E%3C/svg%3E");
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+  -webkit-mask-size: 80px 12px;
+  mask-size: 80px 12px;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+  opacity: 0;
+  animation:
+    m3-wave-fill 2.6s cubic-bezier(.4,0,.25,1) infinite,
+    m3-wave-undulate 1.35s linear infinite;
   pointer-events: none;
 }
 
@@ -1550,9 +1552,17 @@ body[data-m3-skin] [data-composer-card] :is(button[type=submit], button[class*="
   from { -webkit-mask-position: 0 0; mask-position: 0 0; }
   to { -webkit-mask-position: 120px 0; mask-position: 120px 0; }
 }
-@keyframes m3-squiggle-run {
-  0% { -webkit-mask-position: -96px 0; mask-position: -96px 0; }
-  100% { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
+@keyframes m3-wave-fill {
+  0%   { width: 0; opacity: 0; }
+  4%   { width: 0; opacity: 1; }
+  78%  { width: 100%; opacity: 1; }
+  92%  { width: 100%; opacity: 1; }
+  97%  { width: 100%; opacity: 0; }
+  100% { width: 0; opacity: 0; }
+}
+@keyframes m3-wave-undulate {
+  from { -webkit-mask-position: 0 0; mask-position: 0 0; }
+  to { -webkit-mask-position: 80px 0; mask-position: 80px 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
