@@ -14,13 +14,17 @@ Built and tested against DeepSeek Harness `0.2.1-rc.3` (web surface).
 - **One sheet, no seams** — the sidebar, header, chat and composer share a single painted surface. No dividers, no contrasting bands, no floating panels.
 - **Tonal paper cards** — elevation is expressed by surface tone and a soft lift, not by borders.
 - **Wave progress line** — while the model is working, a wavy ribbon grows from 0 to 100% along a faint straight track above the composer, then starts over. The wave keeps undulating as it fills. At rest the whole line disappears.
-- **Expressive send button** — a tonal disc holding one dark rotated ellipse, with the glyph on top.
-- **A palette picker you can reach** — a seed palette on the new-session hero, a cycling seed button in the composer, and a full settings page with motion and ambient toggles.
+- **Expressive send button** — a tonal disc holding one dark shape that keeps morphing: it tilts, stretches into an oval, rounds into a blob and settles back, on a 6-second loop. Never a static icon.
+- **A real palette** — the button beside the composer opens a palette panel: six seeds, plus hue and saturation sliders for a custom color. The whole interface re-tones live as you drag.
 - **Light and dark**, `prefers-reduced-motion` respected, all labels localized (English and Chinese).
 
 | Light, idle | Dark, working |
 | --- | --- |
 | ![light idle](preview/chat-idle-light.png) | ![dark busy](preview/chat-dark.png) |
+
+| Palette, light | Palette, dark |
+| --- | --- |
+| ![palette light](preview/palette-light.png) | ![palette dark](preview/palette-dark.png) |
 
 ---
 
@@ -119,7 +123,11 @@ So v4 stops fighting at the token level and neutralizes the painted surfaces dir
 Two details got their final form in this pass:
 
 - **Composer progress** is a wavy ribbon that fills the track: `width` animates from `0` to `100%` over 2.6 s, while a second animation slides the wave mask so the ribbon undulates as it grows. Two animations, two pseudo-elements: `::before` is the faint track, `::after` is the wave.
-- **The send button** is the reference circle: a tonal disc, one dark rotated ellipse inside, glyph on top, with the ellipse rotating and softening on hover and press.
+- **The send button** is the reference circle: a tonal disc, one dark expressive shape inside, glyph on top. The inner shape is not a fixed ellipse — a `border-radius` / `rotate` / `scale` keyframe cycle morphs it continuously, the way the reference animation does.
+
+### The palette
+
+`conversation.input.right` hosts a button that opens a fixed-position palette panel. Picking one of the six seeds sets a preset; dragging either slider switches the state to `custom` and stores a hue and saturation, so the token generator can build a full tonal map from any color, not just the presets. The panel closes on outside click or Escape.
 
 ### Busy detection
 
@@ -134,7 +142,7 @@ Two details got their final form in this pass:
 - The seed button cycles through all six seeds and wraps back to Peach; preferences persist to `localStorage`.
 - The generated stylesheet is ~50 KB, has balanced braces, and is scoped to `body[data-m3-skin]`.
 - All five slot registrations are present.
-- Headless Chrome renders pass in light and dark, idle and busy, at 1440×1000.
+- Headless Chrome renders pass in light and dark, idle and busy, plus the palette panel, at 1440×1000.
 
 ### Known limits
 

@@ -38,6 +38,12 @@ window.__ModuleLoader__.load({
       reset: 'Reset to Peach',
       palette: 'Palette',
       nextPalette: 'Switch palette',
+      paletteTitle: 'Palette',
+      paletteHint: 'Pick a seed, or dial in your own hue.',
+      custom: 'Custom',
+      hue: 'Hue',
+      saturation: 'Saturation',
+      done: 'Done',
       'palette.peach': 'Peach',
       'palette.lavender': 'Lavender',
       'palette.sage': 'Sage',
@@ -60,6 +66,12 @@ window.__ModuleLoader__.load({
       reset: '恢复蜜桃色',
       palette: '调色板',
       nextPalette: '切换配色',
+      paletteTitle: '调色盘',
+      paletteHint: '选一个种子色，或者自己调一个色相。',
+      custom: '自定义',
+      hue: '色相',
+      saturation: '饱和度',
+      done: '完成',
       'palette.peach': '蜜桃',
       'palette.lavender': '薰衣草',
       'palette.sage': '鼠尾草',
@@ -81,7 +93,7 @@ window.__ModuleLoader__.load({
       { id: 'sand', hue: 42, sat: 48, swatch: ['#E8C97A', '#F5E1A7', '#5D4A16'] },
     ];
 
-    const DEFAULT_PREFS = { seed: 'peach', motion: 'on', ambient: 'on' };
+    const DEFAULT_PREFS = { seed: 'peach', hue: 18, sat: 72, motion: 'on', ambient: 'on' };
 
     function clamp(value) {
       return Math.max(0, Math.min(100, Math.round(value)));
@@ -192,8 +204,23 @@ function makeScheme(seed, dark) {
       return SEEDS[0];
     }
 
-    function tokenPairs(seedId) {
-      const seed = seedById(seedId);
+    /* A seed is either one of the presets or a custom hue/sat pair. */
+    function activeSeed(state) {
+      const prefs = state || DEFAULT_PREFS;
+      if (prefs.seed === 'custom') {
+        const hue = typeof prefs.hue === 'number' ? prefs.hue : DEFAULT_PREFS.hue;
+        const sat = typeof prefs.sat === 'number' ? prefs.sat : DEFAULT_PREFS.sat;
+        return {
+          id: 'custom',
+          hue: hue,
+          sat: sat,
+          swatch: [hsl(hue, sat, 76), hsl(hue, Math.max(20, sat * 0.55), 93), hsl(hue, sat, 34)],
+        };
+      }
+      return seedById(prefs.seed);
+    }
+
+    function tokenPairs(seed) {
       const light = makeScheme(seed, false);
       const dark = makeScheme(seed, true);
       const pairs = {};
@@ -268,8 +295,17 @@ function makeScheme(seed, dark) {
       const known = SEEDS.some(function (seed) {
         return seed.id === source.seed;
       });
+      const custom = source.seed === 'custom';
+      const hue = typeof source.hue === 'number' && isFinite(source.hue)
+        ? ((Math.round(source.hue) % 360) + 360) % 360
+        : DEFAULT_PREFS.hue;
+      const sat = typeof source.sat === 'number' && isFinite(source.sat)
+        ? Math.max(18, Math.min(90, Math.round(source.sat)))
+        : DEFAULT_PREFS.sat;
       return {
-        seed: known ? source.seed : DEFAULT_PREFS.seed,
+        seed: known ? source.seed : (custom ? 'custom' : DEFAULT_PREFS.seed),
+        hue: hue,
+        sat: sat,
         motion: source.motion === 'off' ? 'off' : 'on',
         ambient: source.ambient === 'off' ? 'off' : 'on',
       };
@@ -316,10 +352,16 @@ function makeScheme(seed, dark) {
 
     function setPrefs(patch) {
       const next = normalizePrefs(Object.assign({}, prefs, patch));
-      if (next.seed === prefs.seed && next.motion === prefs.motion && next.ambient === prefs.ambient) {
+      if (
+        next.seed === prefs.seed &&
+        next.hue === prefs.hue &&
+        next.sat === prefs.sat &&
+        next.motion === prefs.motion &&
+        next.ambient === prefs.ambient
+      ) {
         return prefs;
       }
-      const seedChanged = next.seed !== prefs.seed;
+      const seedChanged = next.seed !== prefs.seed || next.hue !== prefs.hue || next.sat !== prefs.sat;
       prefs = next;
       writePrefs(next);
       if (stampBody) stampBody();
@@ -331,6 +373,7 @@ function makeScheme(seed, dark) {
     }
 
     function seedLabel(seed) {
+      if (seed.id === 'custom') return translate('custom');
       const key = 'palette.' + seed.id;
       const text = translate(key);
       return text === key ? seed.id : text;
@@ -1528,17 +1571,17 @@ body[data-m3-skin] [data-composer-card] :is(button[type=submit], button[class*="
   background: var(--m3onpc);
   border-radius: 50%;
   transform: rotate(-32deg);
-  transition: transform .3s cubic-bezier(.2,0,0,1.25), border-radius .3s ease;
+  animation: m3-send-morph 6.2s cubic-bezier(.45,0,.55,1) infinite;
   pointer-events: none;
 }
 body[data-m3-skin] [data-composer-card] :is(button[type=submit], button[class*="_primary"]):hover {
   transform: scale(1.05);
 }
-body[data-m3-skin] [data-composer-card] :is(button[type=submit], button[class*="_primary"]):hover::after {
-  transform: rotate(-14deg) scale(1.05);
+body[data-m3-skin] [data-composer-card] :is(button[type=submit], button[class*="_primary"]):hover::before {
+  background: radial-gradient(circle at 30% 22%, color-mix(in srgb, #fff 52%, var(--m3pc)), var(--m3pc) 72%);
 }
-body[data-m3-skin] [data-composer-card] :is(button[type=submit], button[class*="_primary"]):active::after {
-  border-radius: 46% 54% 52% 48% / 54% 48% 52% 46%;
+body[data-m3-skin] [data-composer-card] :is(button[type=submit], button[class*="_primary"]):active {
+  transform: scale(.94);
 }
 body[data-m3-skin] [data-composer-card] :is(button[type=submit], button[class*="_primary"]) svg {
   position: relative;
@@ -1546,6 +1589,162 @@ body[data-m3-skin] [data-composer-card] :is(button[type=submit], button[class*="
   width: 15px;
   height: 15px;
   color: inherit;
+}
+
+/* ---------------------------------------------------------------------------
+   Palette panel: the full调色盘 — six seeds plus a custom hue and saturation.
+   --------------------------------------------------------------------------- */
+body[data-m3-skin] .m3-picker {
+  position: fixed;
+  z-index: 2147483000;
+  width: 286px;
+  box-sizing: border-box;
+  padding: 16px 18px 18px;
+  border-radius: 28px;
+  background: var(--m3surf-lowest);
+  color: var(--m3onsurf);
+  box-shadow:
+    0 2px 6px -3px rgba(0, 0, 0, .22),
+    0 26px 60px -28px rgba(0, 0, 0, .42);
+  font-size: 12px;
+  line-height: 1.4;
+  animation: m3-picker-in .24s cubic-bezier(.2,0,0,1.12);
+}
+body[data-m3-skin] .m3-picker__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+body[data-m3-skin] .m3-picker__title {
+  font-size: 14px;
+  font-weight: 760;
+  letter-spacing: -.01em;
+}
+body[data-m3-skin] .m3-picker__chip {
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--m3pc);
+  color: var(--m3onpc);
+  font-size: 10px;
+  font-weight: 780;
+  letter-spacing: .02em;
+}
+body[data-m3-skin] .m3-picker__hint {
+  margin: 6px 0 14px;
+  color: var(--m3onsurfv);
+  font-size: 11px;
+}
+body[data-m3-skin] .m3-picker__grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+body[data-m3-skin] .m3-picker__swatch {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background:
+    linear-gradient(160deg, var(--m3-swatch-a) 0%, var(--m3-swatch-b) 58%, var(--m3-swatch-c) 100%);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, #000 8%, transparent);
+  cursor: pointer;
+  transition: transform .22s cubic-bezier(.2,0,0,1.3), box-shadow .22s ease;
+}
+body[data-m3-skin] .m3-picker__swatch:hover {
+  transform: translateY(-2px) scale(1.06);
+}
+body[data-m3-skin] .m3-picker__swatch.is-active {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, #000 10%, transparent),
+    0 0 0 2px var(--m3surf-lowest),
+    0 0 0 4px var(--m3p);
+}
+body[data-m3-skin] .m3-picker__swatch-core {
+  position: absolute;
+  inset: 34%;
+  border-radius: 50%;
+  background: color-mix(in srgb, #fff 66%, transparent);
+}
+body[data-m3-skin] .m3-picker__field + .m3-picker__field {
+  margin-top: 12px;
+}
+body[data-m3-skin] .m3-picker__field-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+body[data-m3-skin] .m3-picker__label {
+  font-weight: 700;
+}
+body[data-m3-skin] .m3-picker__value {
+  font-variant-numeric: tabular-nums;
+  color: var(--m3onsurfv);
+  font-size: 11px;
+}
+body[data-m3-skin] .m3-picker__slider {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 20px;
+  margin: 0;
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+}
+body[data-m3-skin] .m3-picker__slider--hue {
+  background: linear-gradient(90deg,
+    hsl(0 78% 62%), hsl(45 78% 62%), hsl(90 78% 62%), hsl(135 78% 62%),
+    hsl(180 78% 62%), hsl(225 78% 62%), hsl(270 78% 62%), hsl(315 78% 62%), hsl(360 78% 62%));
+}
+body[data-m3-skin] .m3-picker__slider--sat {
+  background: linear-gradient(90deg,
+    hsl(var(--m3-h) 8% 64%), hsl(var(--m3-h) 90% 56%));
+}
+body[data-m3-skin] .m3-picker__slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .35), 0 0 0 1px rgba(0, 0, 0, .08);
+  transition: transform .18s cubic-bezier(.2,0,0,1.3);
+}
+body[data-m3-skin] .m3-picker__slider:active::-webkit-slider-thumb {
+  transform: scale(1.16);
+}
+body[data-m3-skin] .m3-picker__slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .35);
+}
+body[data-m3-skin] .m3-seed-button.is-open {
+  transform: scale(.92);
+}
+@keyframes m3-picker-in {
+  from { opacity: 0; transform: translateY(8px) scale(.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes m3-send-morph {
+  0%   { border-radius: 50%; transform: rotate(-32deg) scale(1); }
+  12%  { border-radius: 46% 54% 44% 56% / 62% 38% 62% 38%; transform: rotate(-6deg) translate(1px, -1px) scale(.88); }
+  26%  { border-radius: 62% 38% 56% 44% / 38% 62% 38% 62%; transform: rotate(-52deg) translate(-1px, 1px) scale(1.08); }
+  40%  { border-radius: 40% 60% 62% 38% / 56% 44% 60% 40%; transform: rotate(-14deg) translate(1px, 1px) scale(.92); }
+  54%  { border-radius: 60% 40% 38% 62% / 42% 58% 40% 60%; transform: rotate(-58deg) translate(-1px, -1px) scale(1.06); }
+  68%  { border-radius: 38% 62% 58% 42% / 58% 42% 62% 38%; transform: rotate(-22deg) scale(.9); }
+  82%  { border-radius: 56% 44% 46% 54% / 44% 56% 44% 56%; transform: rotate(-44deg) translate(1px, -1px) scale(1.04); }
+  92%  { border-radius: 48% 52% 50% 50% / 52% 48% 50% 50%; transform: rotate(-28deg) scale(.97); }
+  100% { border-radius: 50%; transform: rotate(-32deg) scale(1); }
 }
 
 @keyframes m3-wave-mask-flow {
@@ -1571,8 +1770,11 @@ body[data-m3-skin] [data-composer-card] :is(button[type=submit], button[class*="
   body[data-m3-skin] [data-composer-card]::after {
     animation: none !important;
   }
-  body[data-m3-skin] [data-composer-card] :is(button[type=submit], button[class*="_primary"])::before {
-    transition: none !important;
+  body[data-m3-skin] [data-composer-card] :is(button[type=submit], button[class*="_primary"])::after {
+    animation: none !important;
+  }
+  body[data-m3-skin] .m3-picker {
+    animation: none !important;
   }
 }
 `;
@@ -1656,7 +1858,7 @@ body[data-m3-skin] [data-composer-card] :is(button[type=submit], button[class*="
 
     function SettingsSection() {
       const current = usePrefs();
-      const seed = seedById(current.seed);
+      const seed = activeSeed(current);
       return h('section', { className: 'm3-settings' },
         h('header', { className: 'm3-settings__head' },
           h('span', { className: 'm3-mark-wrap' }, h(Mark, { size: 32 })),
@@ -1729,33 +1931,171 @@ body[data-m3-skin] [data-composer-card] :is(button[type=submit], button[class*="
       );
     }
 
+    function PalettePanel(props) {
+      const current = props.prefs;
+      const seed = activeSeed(current);
+      const custom = current.seed === 'custom';
+      const hue = custom ? current.hue : seed.hue;
+      const sat = custom ? current.sat : seed.sat;
+      return h('div', {
+        className: 'm3-picker',
+        ref: props.innerRef,
+        style: props.style,
+        role: 'dialog',
+        'aria-label': translate('paletteTitle'),
+      },
+        h('div', { className: 'm3-picker__head' },
+          h('span', { className: 'm3-picker__title' }, translate('paletteTitle')),
+          h('span', { className: 'm3-picker__chip' }, seedLabel(seed))
+        ),
+        h('p', { className: 'm3-picker__hint' }, translate('paletteHint')),
+        h('div', { className: 'm3-picker__grid' },
+          SEEDS.map(function (item) {
+            const active = current.seed === item.id;
+            return h('button', {
+              key: item.id,
+              type: 'button',
+              className: 'm3-picker__swatch' + (active ? ' is-active' : ''),
+              style: {
+                '--m3-swatch-a': item.swatch[0],
+                '--m3-swatch-b': item.swatch[1],
+                '--m3-swatch-c': item.swatch[2],
+              },
+              title: seedLabel(item),
+              'aria-label': seedLabel(item),
+              'aria-pressed': active,
+              onClick: function () {
+                props.onPick(item.id);
+              },
+            },
+              h('span', { className: 'm3-picker__swatch-core' })
+            );
+          })
+        ),
+        h('div', { className: 'm3-picker__field' },
+          h('div', { className: 'm3-picker__field-head' },
+            h('span', { className: 'm3-picker__label' }, translate('hue')),
+            h('span', { className: 'm3-picker__value' }, String(Math.round(hue)) + '\u00b0')
+          ),
+          h('input', {
+            type: 'range',
+            min: 0,
+            max: 359,
+            step: 1,
+            className: 'm3-picker__slider m3-palette__slider--hue',
+            value: Math.round(hue),
+            'aria-label': translate('hue'),
+            onChange: function (event) {
+              props.onCustom(Number(event.target.value), sat);
+            },
+          })
+        ),
+        h('div', { className: 'm3-picker__field' },
+          h('div', { className: 'm3-picker__field-head' },
+            h('span', { className: 'm3-picker__label' }, translate('saturation')),
+            h('span', { className: 'm3-picker__value' }, String(Math.round(sat)) + '%')
+          ),
+          h('input', {
+            type: 'range',
+            min: 18,
+            max: 90,
+            step: 1,
+            className: 'm3-picker__slider m3-palette__slider--sat',
+            style: { '--m3-h': Math.round(hue) },
+            value: Math.round(sat),
+            'aria-label': translate('saturation'),
+            onChange: function (event) {
+              props.onCustom(hue, Number(event.target.value));
+            },
+          })
+        )
+      );
+    }
+
     function SeedButton() {
       const current = usePrefs();
-      const seed = seedById(current.seed);
-      const label = translate('nextPalette') + ' · ' + seedLabel(seed);
-      return h('button', {
-        type: 'button',
-        className: 'm3-seed-button',
-        title: label,
-        'aria-label': label,
-        onClick: function () {
-          let index = 0;
-          for (let cursor = 0; cursor < SEEDS.length; cursor += 1) {
-            if (SEEDS[cursor].id === current.seed) index = cursor;
-          }
-          setPrefs({ seed: SEEDS[(index + 1) % SEEDS.length].id });
+      const seed = activeSeed(current);
+      const openState = React.useState(false);
+      const open = openState[0];
+      const setOpen = openState[1];
+      const posState = React.useState(null);
+      const pos = posState[0];
+      const setPos = posState[1];
+      const buttonRef = React.useRef(null);
+      const panelRef = React.useRef(null);
+
+      React.useEffect(function () {
+        if (!open) return undefined;
+        function onPointer(event) {
+          const panel = panelRef.current;
+          const button = buttonRef.current;
+          if (panel && panel.contains(event.target)) return;
+          if (button && button.contains(event.target)) return;
+          setOpen(false);
+        }
+        function onKey(event) {
+          if (event.key === 'Escape') setOpen(false);
+        }
+        document.addEventListener('pointerdown', onPointer, true);
+        document.addEventListener('keydown', onKey);
+        return function () {
+          document.removeEventListener('pointerdown', onPointer, true);
+          document.removeEventListener('keydown', onKey);
+        };
+      }, [open]);
+
+      function toggle() {
+        if (open) {
+          setOpen(false);
+          return;
+        }
+        const node = buttonRef.current;
+        if (node) {
+          const rect = node.getBoundingClientRect();
+          setPos({
+            right: Math.max(14, Math.round(window.innerWidth - rect.right)),
+            bottom: Math.max(14, Math.round(window.innerHeight - rect.top + 14)),
+          });
+        }
+        setOpen(true);
+      }
+
+      const label = translate('paletteTitle') + ' \u00b7 ' + seedLabel(seed);
+
+      return h(React.Fragment, null,
+        h('button', {
+          ref: buttonRef,
+          type: 'button',
+          className: 'm3-seed-button' + (open ? ' is-open' : ''),
+          title: label,
+          'aria-label': label,
+          'aria-expanded': open,
+          onClick: toggle,
         },
-      },
-        h('span', {
-          className: 'm3-seed-button__ring',
-          style: {
-            '--m3-swatch-a': seed.swatch[0],
-            '--m3-swatch-b': seed.swatch[1],
-            '--m3-swatch-c': seed.swatch[2],
+          h('span', {
+            className: 'm3-seed-button__ring',
+            style: {
+              '--m3-swatch-a': seed.swatch[0],
+              '--m3-swatch-b': seed.swatch[1],
+              '--m3-swatch-c': seed.swatch[2],
+            },
           },
-        },
-          h('span', { className: 'm3-seed-button__core' }, h(Mark, { size: 14 }))
-        )
+            h('span', { className: 'm3-seed-button__core' }, h(Mark, { size: 14 }))
+          )
+        ),
+        open ? h(PalettePanel, {
+          prefs: current,
+          innerRef: panelRef,
+          style: pos
+            ? { right: pos.right + 'px', bottom: pos.bottom + 'px' }
+            : { right: '24px', bottom: '96px' },
+          onPick: function (id) {
+            setPrefs({ seed: id });
+          },
+          onCustom: function (hue, sat) {
+            setPrefs({ seed: 'custom', hue: hue, sat: sat });
+          },
+        }) : null
       );
     }
 
@@ -1850,7 +2190,7 @@ body[data-m3-skin] [data-composer-card] :is(button[type=submit], button[class*="
 
         let tokenDispose = null;
         applyTokens = function () {
-          const next = ctx.theme.overrideTokens(PKG, tokenPairs(prefs.seed));
+          const next = ctx.theme.overrideTokens(PKG, tokenPairs(activeSeed(prefs)));
           if (tokenDispose) tokenDispose();
           tokenDispose = next;
         };
